@@ -48,20 +48,27 @@ let playRound = (playerSelection, computerSelection) => {
 let game = () => {
 	let pointsPlayer = 0;
 	let pointsComputer = 0;
+	let round = 0;
 
 	while(1){
 		if(pointsComputer == 5 || pointsPlayer == 5){
 			break;
 		}
+		round++;
+		console.log("Round "+round);
 
 		let input = prompt("Enter \"rock\", \"paper\" or \"scissors\"", "");
-		let roundResult = playRound(input, computerPlay());
+		let computer = computerPlay();
 
-		if(roundResult.search("You win")){
+		console.log(`You chose ${input}, computer chose ${computer}`);
+		let roundResult = playRound(input, computer);
+		
+		console.log(roundResult);
+		if(roundResult.includes("You win")){
 			pointsPlayer++;
 		}
-		
-		else if(roundResult.search("You lose")){
+
+		else if(roundResult.includes("You lose")){
 			pointsComputer++;
 		}
 
