@@ -1,3 +1,34 @@
+const buttons = document.querySelectorAll("[data-choice]");
+
+const roundNumber = document.querySelector(".round-number");
+const points = document.querySelector(".points");
+const roundOutcome = document.querySelector(".round-outcome");
+const endMessage = document.querySelector(".end-message");
+const restart = document.querySelector(".restart");
+
+let pointsPlayer = 0;
+let pointsComputer = 0;
+let round = 0;
+let ended = false;
+
+buttons.forEach(button => {
+	button.addEventListener("click", (event) => {
+		if(!ended){
+			let message = playRound(event.target.dataset.choice, computerPlay());
+			refresh(message);
+		}
+	})
+})
+
+restart.addEventListener("click", () =>{
+	pointsPlayer = 0;
+	pointsComputer =0;
+	round = -1;
+	ended = false;
+	refresh("");
+})
+
+
 let computerPlay = () => {
 	let number = Math.floor(Math.random() * 3);
 	switch (number) {
@@ -27,55 +58,44 @@ let playRound = (playerSelection, computerSelection) => {
 
 		case (playerSelection == "paper"):
 			if (computerSelection == "rock") {
-				return "You win! Paper beats rock";
+				return "You win this round! Paper beats rock";
 			}
-			return "You lose! Scissors beat paper";
+			return "You lose this round! Scissors beat paper";
 
 		case (playerSelection == "rock"):
 			if (computerSelection == "scissors") {
-				return "You win! Rock beats scissors";
+				return "You win this round! Rock beats scissors";
 			}
-			return "You lose! Paper beat rock";
+			return "You lose this round! Paper beat rock";
 
 		case (playerSelection == "scissors"):
 			if (computerSelection == "paper") {
-				return "You win! Scissors beats paper";
+				return "You win this round! Scissors beats paper";
 			}
-			return "You lose! Rock beat scissors";
+			return "You lose this round! Rock beat scissors";
 	}
 }
 
-let game = () => {
-	let pointsPlayer = 0;
-	let pointsComputer = 0;
-	let round = 0;
+let refresh = (roundResult) => {
+	endMessage.textContent = "";
 
-	while(1){
-		if(pointsComputer == 5 || pointsPlayer == 5){
-			break;
-		}
-		round++;
-		console.log("Round "+round);
+	round++;
+	roundNumber.textContent = "Round " + round;
+	
+	roundOutcome.textContent = roundResult;
 
-		let input = prompt("Enter \"rock\", \"paper\" or \"scissors\"", "");
-		let computer = computerPlay();
-
-		console.log(`You chose ${input}, computer chose ${computer}`);
-		let roundResult = playRound(input, computer);
-		
-		console.log(roundResult);
-		if(roundResult.includes("You win")){
-			pointsPlayer++;
-		}
-
-		else if(roundResult.includes("You lose")){
-			pointsComputer++;
-		}
-
-		console.log("Points player: "+pointsPlayer+"\n"+"Points Computer: "+pointsComputer);
+	if (roundResult.includes("You win")) {
+		pointsPlayer++;
 	}
 
-	console.log((pointsPlayer == 5 )? "You win! You got 5 wins first!" : "You lose... Computer got 5 wins first");
-}
+	else if (roundResult.includes("You lose")) {
+		pointsComputer++;
+	}
 
-game();
+	points.textContent = "PLAYER: " + pointsPlayer + "\n" + "COMPUTER: " + pointsComputer;
+
+	if(pointsPlayer == 5 || pointsComputer ==5){
+		endMessage.textContent = (pointsPlayer == 5)? "You win the game! You got 5 wins first!" : "You lose the game... Computer got 5 wins first";
+		ended = true;
+	}
+}
